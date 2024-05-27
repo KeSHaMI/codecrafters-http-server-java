@@ -37,8 +37,7 @@ public class HttpServer {
         InputStream input = clientSocket.getInputStream();
         OutputStream output = clientSocket.getOutputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        String data = reader.readLine();
-        Request request = new Request(data);
+        Request request = new Request(reader);
         RequestHandler handler = new Router().getHandler(request);
 
         request.print();

@@ -7,6 +7,7 @@ import app.handlers.EchoHandler;
 import app.handlers.NotFoundHandler;
 import app.handlers.RequestHandler;
 import app.handlers.RootHandler;
+import app.handlers.UserAgentHandler;
 import http.Request;
 
 
@@ -17,6 +18,7 @@ public class Router {
     public Router() {
         handlers.put("GET /", new RootHandler());
         handlers.put("GET /echo/{}", new EchoHandler());
+        handlers.put("GET /user-agent", new UserAgentHandler());
     }
 
 
