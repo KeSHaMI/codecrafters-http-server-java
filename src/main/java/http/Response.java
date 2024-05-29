@@ -20,6 +20,9 @@ public class Response {
         this.statusCode = statusCode;
         this.body = body;
     }
+    public static Response getNotFoundResponse() {
+        return new Response(404, "Not Found");
+    }
     public void addHeader(String key, String value) {
         headers.put(key, value);
     }

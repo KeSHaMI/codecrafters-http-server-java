@@ -1,5 +1,6 @@
 package http;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,18 +10,29 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import app.FileService;
 import app.Router;
 import app.handlers.RequestHandler;
 
 public class HttpServer {
     final int port;
-      private final ExecutorService executorService;
+    private final ExecutorService executorService;
+    private final FileService fileService;
 
 
-  public HttpServer(final int port, final int concurrencyLevel) {
+  public HttpServer(final int port, final int concurrencyLevel, final String filesDirectory) {
     this.port = port;
     this.executorService = Executors.newFixedThreadPool(concurrencyLevel);
-  }
+    if (filesDirectory == null) {
+        this.fileService = null;
+        return;
+    }
+    File directory = new File(filesDirectory);
+    if (!directory.exists()) {
+        directory.mkdirs();
+    }
+    this.fileService = new FileService(filesDirectory);
+}
 
     public ServerSocket createServerSocket() throws IOException {
         ServerSocket serverSocket = new ServerSocket(this.port);
@@ -40,13 +52,16 @@ public class HttpServer {
             OutputStream output = clientSocket.getOutputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             Request request = new Request(reader);
-            RequestHandler handler = new Router().getHandler(request);
-    
             request.print();
-    
-            Response response = handler.handle(request);
-            output.write(response.encode());
-    
+            try {
+                RequestHandler handler = new Router(this.fileService).getHandler(request);
+                Response response = handler.handle(request);
+                output.write(response.encode());
+        
+            } catch (Exception e) {
+                System.out.println("Error reading request: " + e.getMessage());
+            }
+  
     
             } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
