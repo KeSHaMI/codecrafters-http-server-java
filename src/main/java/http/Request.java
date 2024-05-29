@@ -10,6 +10,7 @@ public class Request {
     public final String path;
     public Map<String, String> headers;
     final String version;
+    public final String body;
 
     private final Map<String, HttpMethod> methods = Map.of(
             "GET", HttpMethod.GET,
@@ -17,6 +18,7 @@ public class Request {
     );
 
     public Request(BufferedReader reader) {
+        this.body = "";
         try {
             String headerLine = reader.readLine();
             System.out.println("Header Line: " + headerLine);
@@ -30,6 +32,7 @@ public class Request {
                 if (line == null) {
                     break;
                 }
+                System.out.println("Header Line: " + line);
                 String[] splittedHeader = line.split(": ");
                 if (splittedHeader.length == 1) {
                     System.out.println(splittedHeader[0]);
