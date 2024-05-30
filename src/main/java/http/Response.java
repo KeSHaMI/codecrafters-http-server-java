@@ -10,6 +10,7 @@ public class Response {
     private final String httpVersion = "HTTP/1.1";
     private final Map<Integer, String> statusCodesMessages = Map.of(
             200, "OK",
+            201, "Created",
             404, "Not Found",
             500, "Internal Server Error"
     ); 
@@ -27,6 +28,7 @@ public class Response {
         headers.put(key, value);
     }
     public byte[] encode() {
+        System.out.println("Encoding response");
         String response = httpVersion + " " + statusCode + " " + statusCodesMessages.get(this.statusCode) + "\r\n";
         for (String key : headers.keySet()) {
             response += key + ": " + headers.get(key) + "\r\n";

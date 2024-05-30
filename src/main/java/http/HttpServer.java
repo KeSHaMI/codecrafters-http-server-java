@@ -51,20 +51,18 @@ public class HttpServer {
             InputStream input = clientSocket.getInputStream();
             OutputStream output = clientSocket.getOutputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            System.out.println("Reading request");
             Request request = new Request(reader);
             request.print();
             try {
                 RequestHandler handler = new Router(this.fileService).getHandler(request);
                 Response response = handler.handle(request);
                 output.write(response.encode());
-        
             } catch (Exception e) {
                 System.out.println("Error reading request: " + e.getMessage());
             }
-  
-    
             } catch (IOException e) {
-            System.out.println("IOException: " + e.getMessage());
+                System.out.println("IOException: " + e.getMessage());
             } 
     }
 

@@ -7,6 +7,7 @@ import java.util.Map;
 import app.handlers.EchoHandler;
 import app.handlers.GetFileHandler;
 import app.handlers.NotFoundHandler;
+import app.handlers.PostFileHandler;
 import app.handlers.RequestHandler;
 import app.handlers.RootHandler;
 import app.handlers.UserAgentHandler;
@@ -24,6 +25,7 @@ public class Router {
         handlers.put("GET /echo/{}", EchoHandler.class);
         handlers.put("GET /user-agent", UserAgentHandler.class);
         handlers.put("GET /files/{}", GetFileHandler.class);
+        handlers.put("POST /files/{}", PostFileHandler.class);
     }
 
 
@@ -35,6 +37,7 @@ public class Router {
               SecurityException, 
               NoSuchMethodException {
         String routeKey = request.method + " " + request.path;
+        System.out.println(routeKey);
         Class<? extends RequestHandler> handler = this.handlers.get(routeKey);
         if (handler != null)
             return handler.getDeclaredConstructor(FileService.class).newInstance(this.fileService);
