@@ -1,6 +1,10 @@
 package http;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
+
+import app.encoding.GzipEncoder;
 
 
 public class Response {
@@ -27,15 +31,40 @@ public class Response {
     public void addHeader(String key, String value) {
         headers.put(key, value);
     }
-    public byte[] encode() {
+    public byte[] encode() throws IOException{
         System.out.println("Encoding response");
+
+        String encoding = headers.get("Content-Encoding");
+        byte[] encodedBody;
+        if (encoding != null) {
+            System.out.println("Encoding response");
+            if (encoding.equals("gzip")) {
+                System.out.println("Gzipping response");
+                encodedBody = new GzipEncoder().encode(body);
+            }
+            else {
+                encodedBody = body.getBytes();
+            }
+            
+        } else {
+            encodedBody = body.getBytes();
+        }
+        this.headers.put("Content-Length", String.valueOf(encodedBody.length));
         String response = httpVersion + " " + statusCode + " " + statusCodesMessages.get(this.statusCode) + "\r\n";
         for (String key : headers.keySet()) {
             response += key + ": " + headers.get(key) + "\r\n";
         }
-        response += "\r\n" + body;
+        response += "\r\n";
+        byte[] responseBytes = response.getBytes();
         System.out.println(response);
-        return response.getBytes();
+        
+        return mergeByteArrays(responseBytes, encodedBody);
+    }
+    private byte[] mergeByteArrays(byte[] a, byte[] b) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+        outputStream.write( a );
+        outputStream.write( b );
+        return outputStream.toByteArray();
     }
 
 }

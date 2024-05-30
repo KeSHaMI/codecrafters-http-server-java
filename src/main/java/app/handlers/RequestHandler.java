@@ -15,7 +15,6 @@ public abstract class RequestHandler {
 
     protected void addContentHeaders(Response response, String contentType) {
         response.addHeader("Content-Type", contentType);
-        response.addHeader("Content-Length", response.body.length() + "");
     }
     protected void addContentHeaders(Response response) {
         addContentHeaders(response,  "text/plain");
