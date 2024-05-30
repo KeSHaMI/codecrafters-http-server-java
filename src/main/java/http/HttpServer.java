@@ -59,7 +59,8 @@ public class HttpServer {
                 Response response = handler.handle(request);
                 output.write(response.encode());
             } catch (Exception e) {
-                System.out.println("Error reading request: " + e.getMessage());
+                System.out.println("Error reading request: ");
+                e.printStackTrace();
             }
             } catch (IOException e) {
                 System.out.println("IOException: " + e.getMessage());

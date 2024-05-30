@@ -11,6 +11,7 @@ public class EchoHandler extends RequestHandler {
         String echoData = request.path.split("/")[2];
         Response response = new Response(200, echoData);
         this.addContentHeaders(response);
+        this.addEncodingHeaders(response, request);
         return response;
     }
 }
